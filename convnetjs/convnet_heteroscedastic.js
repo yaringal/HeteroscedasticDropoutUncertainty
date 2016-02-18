@@ -968,8 +968,8 @@ var convnetjs = convnetjs || { REVISION: 'ALPHA' };
     }
   }
 
-  // Yarin: implements an heteroscedastic L2 regression cost layer,
-  // including the last inner-product layer (se we have params here).
+  // Yarin: an implementation of a heteroscedastic L2 regression cost layer,
+  // including the last inner-product layer (so we have parameters here).
   var HeteroscedasticRegressionLayer = function(opt) {
     var opt = opt || {};
 

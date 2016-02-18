@@ -117,6 +117,7 @@ function draw_reg(){
       sum_y_sq[c].add(y*y);
       var ls2 = a.w[1];
       var sigma2 = Math.exp(ls2)
+      // we need to average the sigma2 samples following the same derivations for sum_y_sq.
       sum_sigma2[c].add(sigma2);
 
       if(draw_neuron_outputs) {
