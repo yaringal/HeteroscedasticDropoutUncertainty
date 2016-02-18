@@ -3,6 +3,7 @@
 Homoscedastic regression assumes identical observation noise for every input point x. Heteroscedastic regression, on the other hand, assumes that observation noise can vary with input x. Heteroscedastic models are useful in cases where parts of the observation space might have higher noise levels than others.
 
 ![Heteroscedastic dropout regression example](images/heteroscedastic_dropout_reg.png)
+*Example of a heteroscedastic model*
 
 Using dropout we get **homoscedastic** model uncertainty. This can be seen from the model definition [[Gal and Ghahramani 2015, equation 8]](http://arxiv.org/abs/1506.02157). The likelihood in our derivations is defined as $y_i \sim N(mu<sup>W</sup>(x_i), \tau<sup>-1</sup> I)$ with $mu<sup>W</sup>$ the network output, dependent on the randomly dropped weights $W$. Here our model precision $\tau$ (inverse observation noise) is a constant, which has to be tuned for the data.
 
