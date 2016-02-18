@@ -1,30 +1,27 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>Homoscedastic regression with dropout uncertainty demo</title>
-		<script src="js/jquery.min.js"></script>
+		<title>Heteroscedastic regression with dropout uncertainty demo</title>
+		<script src="../js/jquery.min.js"></script>
 		<!-- demos -->
-		<script src="convnetjs/convnet.js"></script>
-		<script src="convnetjs/util.js"></script>
-		<script src="convnetjs/vis.js"></script>
-		<script src="convnetjs/deepqlearn.js"></script>
-		<script src="convnetjs/npgmain.js"></script>
-		<script language="javascript">
-			var tau_inv = 0; // = sigma^2
-		</script>
-		<script src="convnetjs/regression_uncertainty.js"></script>
+		<script src="../convnetjs/convnet_heteroscedastic.js"></script>
+		<script src="../convnetjs/util.js"></script>
+		<script src="../convnetjs/vis.js"></script>
+		<script src="../convnetjs/deepqlearn.js"></script>
+		<script src="../convnetjs/npgmain.js"></script>
+		<script src="../convnetjs/regression_uncertainty_heteroscedastic.js"></script>
 		<style type="text/css">
 			canvas { border: 1px solid white; }
 		</style>
 	</head>
 	<body style='font-family: Arial, "Times New Roman", Times, serif;'>
-		<h1>Homoscedastic regression with dropout uncertainty demo (small observation noise)</h1>
+		<h1>Heteroscedastic regression with dropout uncertainty demo</h1>
 		<p>
 		<b>Simple regression problem</b>. Current stochastic forward pass through the dropout network is plotted in black and the mean of the last 100 forward passes is plotted in blue. Shades of blue denote half a standard deviation. <b>You can click on the plot to add new data points and see how the uncertainty changes</b> (you might have to restart the network after adding new points).
 		</p>
 		<p>
 	    <div style="margin-left: auto; margin-right: auto; width: 700px">
-	   			<canvas id="NPGcanvas" width="700" height="500" style="background-image: url('images/homoscedastic_dropout_reg_small_observation_noise.png'); background-size: cover; opacity:0.4">Browser not supported for Canvas. Get a real browser.</canvas>
+	   			<canvas id="NPGcanvas" width="700" height="500" style="background-image: url('../images/heteroscedastic_dropout_reg.png'); background-size: cover; opacity:0.4">Browser not supported for Canvas. Get a real browser.</canvas>
 	   	</div>
 		<ul>
 			<li><a href="javascript:show_reg();" class="button special">Start</a></li>
@@ -41,7 +38,7 @@
 	    };
 	    hide_reg = function() {
 	    	$(NPGcanvas).css('opacity', 0.4); 
-	    	$(NPGcanvas).css('background-image', 'url("images/reg_demo.png")'); 
+	    	$(NPGcanvas).css('background-image', 'url("../images/heteroscedastic_dropout_reg.png")'); 
 	    	window.clearInterval(NPG_interval);
 		    ctx_reg.clearRect(0,0,WIDTH,HEIGHT);
 	    };

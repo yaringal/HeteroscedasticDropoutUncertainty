@@ -26,7 +26,7 @@ We can implement this new model by slightly adapting the cost function of the or
 
 I put together a few interactive demos, demonstrating the differences between the homoscedastic model and the heteroscedastic one.
 
-First, homoscedastic models with fixed observation noise (either large or small) cannot increase model uncertainty when the amount of observed noise increases rapidly (as we see on the right-hand side of the plane in the different figures). In [this interactive example](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/homoscedastic_dropout_reg_large_observation_noise.html) we have a large(-ish) observation noise of $\tau=1$, and as we can see:
+First, homoscedastic models with fixed observation noise (either large or small) cannot increase model uncertainty when the amount of observed noise increases rapidly (as we see on the right-hand side of the plane in the different figures). In [this interactive example](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/homoscedastic_dropout_reg_large_observation_noise.html) we have a large(-ish) observation noise of $\tau=1$, and as we can see:
 
 ![Homoscedastic dropout regression example, large observation noise](images/homoscedastic_dropout_reg_large_observation_noise.png)
 
@@ -42,13 +42,13 @@ Again, we see the same behaviour with the Gaussian process:
 
 ![Homoscedastic GP regression example, small observation noise](images/homoscedastic_GP_reg_small_observation_noise.png)
 
-This interactive dropout demo is given [here](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/homoscedastic_dropout_reg_small_observation_noise.html). The Matlab code for the Gaussian process experiments is available [here](homoscedastic_GP_reg.m), with a dependency on [GPML](http://www.gaussianprocess.org/gpml/code/matlab/doc/).
+This interactive dropout demo is given [here](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/homoscedastic_dropout_reg_small_observation_noise.html). The Matlab code for the Gaussian process experiments is available [here](homoscedastic_GP_reg.m), with a dependency on [GPML](http://www.gaussianprocess.org/gpml/code/matlab/doc/).
 
-Lastly, our new heteroscedastic model is demonstrated [here](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/heteroscedastic_dropout_reg.html). This model manages to increase model uncertainty in the parts of the plane where there is higher noise:
+Lastly, our new heteroscedastic model is demonstrated [here](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/heteroscedastic_dropout_reg.html). This model manages to increase model uncertainty in the parts of the plane where there is higher noise:
 
 ![Heteroscedastic dropout regression example](images/heteroscedastic_dropout_reg.png)
 
-You can play with this interactive [demo](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/heteroscedastic_dropout_reg.html) and add more points to the dataset.
+You can play with this interactive [demo](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/heteroscedastic_dropout_reg.html) and add more points to the dataset.
 
 These demos demonstrate the differences between homoscedastic and heteroscedastic regression with dropout uncertainty. [ConvnetJS](http://cs.stanford.edu/people/karpathy/convnetjs/) was used here as a framework to interactively demonstrate the properties underlying dropout uncertainty. ConvnetJS was originally developed by Karpathy under the MIT license which is used here as well. 
 
