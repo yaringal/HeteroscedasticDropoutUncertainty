@@ -10,7 +10,34 @@
 		<script src="../convnetjs/deepqlearn.js"></script>
 		<script src="../convnetjs/npgmain.js"></script>
 		<script language="javascript">
+			// Tunable parameters:
 			var tau_inv = 0.1; // = sigma^2
+			var N = 20;
+			var p = 0.05;
+			var l2 = 0.0000005; // p_l(w) = N(w; 0, l^{−2}I); smaller l2 = higher frequencies a-priori
+			var alpha = 4;
+			var beta = 13;
+
+			var l2_decay = l2 * (1 - p) * tau_inv / (2 * N);
+			console.log('l2_decay = ' + l2_decay);
+
+			var data, labels;
+			var density = 5.0;
+			var ssw = 250.0; // scale for drawing
+			var ssh = 50.0; // scale for drawing
+			var acc = 0;
+
+			var layer_defs, net, trainer, sum_y, sum_y_sq;
+
+			// create neural net
+			layer_defs = [];
+			layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:1});
+			layer_defs.push({type:'dropout', drop_prob:p});
+			layer_defs.push({type:'fc', num_neurons:20, activation:'relu'}); // num_neurons = num of outputs
+			layer_defs.push({type:'dropout', drop_prob:p});
+			layer_defs.push({type:'fc', num_neurons:20, activation:'relu'});
+			layer_defs.push({type:'dropout', drop_prob:p});
+			layer_defs.push({type:'regression', num_neurons:1}); // this layer always adds one more fc layer
 		</script>
 		<script src="../convnetjs/regression_uncertainty_DM.js"></script>
 		<style type="text/css">
@@ -18,13 +45,13 @@
 		</style>
 	</head>
 	<body style='font-family: Arial, "Times New Roman", Times, serif;'>
-		<h1>Homoscedastic regression with dropout uncertainty demo</h1>
+		<h1>Homoscedastic regression with dropout uncertainty demo (ReLU units)</h1>
 		<p>
 		<b>Simple regression problem</b>. Current stochastic forward pass through the dropout network is plotted in black and the mean of the last 100 forward passes is plotted in blue. Shades of blue denote half a standard deviation. <b>You can click on the plot to add new data points and see how the uncertainty changes</b> (you might have to restart the network after adding new points).
 		</p>
 		<p>
 	    <div style="margin-left: auto; margin-right: auto; width: 700px">
-	   			<canvas id="NPGcanvas" width="700" height="500" style="background-image: url('../images/homoscedastic_dropout_reg_DM.png'); background-size: cover; opacity:0.4">Browser not supported for Canvas. Get a real browser.</canvas>
+	   			<canvas id="NPGcanvas" width="700" height="500" style="background-image: url('../images/homoscedastic_dropout_reg_DM_relu.png'); background-size: cover; opacity:0.4">Browser not supported for Canvas. Get a real browser.</canvas>
 	   	</div>
 		<ul>
 			<li><a href="javascript:show_reg();" class="button special">Start</a></li>
@@ -41,7 +68,7 @@
 	    };
 	    hide_reg = function() {
 	    	$(NPGcanvas).css('opacity', 0.4); 
-	    	$(NPGcanvas).css('background-image', 'url("../images/homoscedastic_dropout_reg_DM.png")'); 
+	    	$(NPGcanvas).css('background-image', 'url("../images/homoscedastic_dropout_reg_DM_relu.png")'); 
 	    	window.clearInterval(NPG_interval);
 		    ctx_reg.clearRect(0,0,WIDTH,HEIGHT);
 	    };

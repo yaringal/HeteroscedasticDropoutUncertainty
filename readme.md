@@ -48,7 +48,10 @@ Lastly, our new heteroscedastic model is demonstrated [here](http://htmlpreview.
 
 ![Heteroscedastic dropout regression example](images/heteroscedastic_dropout_reg.png)
 
-You can play with this interactive [demo](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/heteroscedastic_dropout_reg.html) and add more points to the dataset.
+You can play with this interactive [demo](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/heteroscedastic_dropout_reg.html) and add more points to the dataset. Further examples with a different function ($y = x + sin(\alpha(x + w)) + sin(\beta(x + w)) + w$ with $w \sim N(0, 0.03<sup>2</sup>), \alpha = 4, \beta = 13$, used in [Deep Exploration via Bootstrapped DQN](http://arxiv.org/pdf/1602.04621v1.pdf)) are given for:
+* A homoscedastic model with [ReLU units](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/homoscedastic_dropout_reg_DM_relu.html),
+* A homoscedastic model with [TanH units](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/homoscedastic_dropout_reg_DM_tanh.html) (inducing different uncertainty estimates),
+* And a [heteroscedastic model](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/heteroscedastic_dropout_reg_DM.html).
 
 These demos demonstrate the differences between homoscedastic and heteroscedastic regression with dropout uncertainty. [ConvnetJS](http://cs.stanford.edu/people/karpathy/convnetjs/) was used here as a framework to interactively demonstrate the properties underlying dropout uncertainty. ConvnetJS was originally developed by Karpathy under the MIT license which is used here as well. 
 

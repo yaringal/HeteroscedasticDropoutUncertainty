@@ -1,31 +1,3 @@
-// Tunable parameters:
-var N = 20;
-var p = 0.05;
-var l2 = 0.0000005; // p_l(w) = N(w; 0, l^{−2}I); smaller l2 = higher frequencies a-priori
-var alpha = 4;
-var beta = 13;
-
-var l2_decay = l2 * (1 - p) * tau_inv / (2 * N);
-console.log('l2_decay = ' + l2_decay);
-
-var data, labels;
-var density = 5.0;
-var ssw = 250.0; // scale for drawing
-var ssh = 50.0; // scale for drawing
-var acc = 0;
-
-var layer_defs, net, trainer, sum_y, sum_y_sq;
-
-// create neural net
-layer_defs = [];
-layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:1});
-layer_defs.push({type:'dropout', drop_prob:p});
-layer_defs.push({type:'fc', num_neurons:20, activation:'tanh'}); // num_neurons = num of outputs
-layer_defs.push({type:'dropout', drop_prob:p});
-layer_defs.push({type:'fc', num_neurons:20, activation:'tanh'});
-layer_defs.push({type:'dropout', drop_prob:p});
-layer_defs.push({type:'regression', num_neurons:1}); // this layer always adds one more fc layer
-
 var lix=2; // layer id of layer we'd like to draw outputs of
 function reload_reg() {
   net = new convnetjs.Net();
