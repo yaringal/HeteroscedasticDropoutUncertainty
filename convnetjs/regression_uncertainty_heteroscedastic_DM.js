@@ -1,17 +1,20 @@
 // Tunable parameters:
-var N = 24;
+var N = 20;
 var p = 0.05;
-var l2 = 0.005; // p_l(w) = N(w; 0, l^{−2}I); l^{−2} = 200
+var l2 = 0.000005; // p_l(w) = N(w; 0, l^{−2}I); smaller l2 = higher frequencies a-priori
+var alpha = 4;
+var beta = 13;
 
-var l2_decay = l2 * (1 - p) * tau_inv / (2 * N);
+var l2_decay = l2 * (1 - p) / (2 * N);
 console.log('l2_decay = ' + l2_decay);
 
 var data, labels;
 var density = 5.0;
-var ss = 30.0; // scale for drawing
+var ssw = 250.0; // scale for drawing
+var ssh = 50.0; // scale for drawing
 var acc = 0;
 
-var layer_defs, net, trainer, sum_y, sum_y_sq;
+var layer_defs, net, trainer, sum_y, sum_y_sq, sum_sigma2;
 
 // create neural net
 layer_defs = [];
@@ -21,7 +24,7 @@ layer_defs.push({type:'fc', num_neurons:20, activation:'tanh'}); // num_neurons 
 layer_defs.push({type:'dropout', drop_prob:p});
 layer_defs.push({type:'fc', num_neurons:20, activation:'tanh'});
 layer_defs.push({type:'dropout', drop_prob:p});
-layer_defs.push({type:'regression', num_neurons:1}); // this layer always adds one more fc layer
+layer_defs.push({type:'heteroscedastic_regression', num_neurons:2}); // this layer always adds one more fc layer
 
 var lix=2; // layer id of layer we'd like to draw outputs of
 function reload_reg() {
@@ -36,6 +39,9 @@ function reload_reg() {
   sum_y_sq = Array();
   for(var x=0.0; x<=WIDTH; x+= density)
     sum_y_sq.push(new cnnutil.Window(100, 0));
+  sum_sigma2 = Array();
+  for(var x=0.0; x<=WIDTH; x+= density)
+    sum_sigma2.push(new cnnutil.Window(100, 0));  
   acc = 0;
 }
  
@@ -46,24 +52,20 @@ function regen_data() {
   sum_y_sq = Array();
   for(var x=0.0; x<=WIDTH; x+= density)
     sum_y_sq.push(new cnnutil.Window(100, 0));
+  sum_sigma2 = Array();
+  for(var x=0.0; x<=WIDTH; x+= density)
+    sum_sigma2.push(new cnnutil.Window(100, 0));
   acc = 0;
   data = [];
   labels = [];
-  for(var i=0;i<N-4;i++) {
-    // var x = Math.random()*10-5;
-    var x = 1.*i/(N-3)*10-5; // for reproducibility
-    var y = x*Math.sin(x);
+  for(var i=0;i<N;i++) {
+    var x = Math.random()*0.8;
+    if (x > 0.6) {x += 0.2;}
+    var w = randn(0, 0.03*0.03);
+    var y = x + Math.sin(alpha*(x + w)) + Math.sin(beta*(x + w)) + w; 
     data.push([x]);
     labels.push([y]);
   }
-  data.push([7.5]);
-  labels.push([7]);
-  data.push([8]);
-  labels.push([-7]);
-  data.push([10.5]);
-  labels.push([7]);
-  data.push([11]);
-  labels.push([-7]);
 }
 
 function myinit(){
@@ -104,20 +106,41 @@ function draw_reg(){
     var c = 0;
     for(var x=0.0; x<=WIDTH; x+= density) {
 
-      netx.w[0] = (x-WIDTH/2)/ss;
+      netx.w[0] = (x-WIDTH/2)/ssw;
       var a = net.forward(netx);
       var y = a.w[0];
       sum_y[c].add(y);
       sum_y_sq[c].add(y*y);
+      var ls2 = a.w[1];
+      var sigma2 = Math.exp(ls2)
+      // we need to average the sigma2 samples following the same derivations for sum_y_sq.
+      sum_sigma2[c].add(sigma2);
 
       if(draw_neuron_outputs) {
         neurons.push(net.layers[lix].out_act.w); // back these up
       }
 
-      if(x===0) ctx_reg.moveTo(x, -y*ss+HEIGHT/2);
-      else ctx_reg.lineTo(x, -y*ss+HEIGHT/2);
+      if(x===0) ctx_reg.moveTo(x, -y*ssh+HEIGHT/2);
+      else ctx_reg.lineTo(x, -y*ssh+HEIGHT/2);
       c += 1;
     }
+
+    ctx_reg.stroke();
+    ctx_reg.strokeStyle = 'rgb(0,250,50)';
+    ctx_reg.globalAlpha = 0.75;
+    ctx_reg.beginPath();
+    for(var x=0.0; x<=WIDTH; x+= density) {
+      var xdash = (x-WIDTH/2)/ssw;
+      var y = xdash + Math.sin(alpha*(xdash)) + Math.sin(beta*(xdash)); 
+      if(x===0) ctx_reg.moveTo(x, -y*ssh+HEIGHT/2);
+      else ctx_reg.lineTo(x, -y*ssh+HEIGHT/2);
+    }
+    // console.log('last ls2 = ' + ls2);
+    // console.log('bias[1] = ' + net.layers[net.layers.length - 1].biases.w[1]);
+    // console.log('Ws[0] = ' + net.layers[net.layers.length - 1].filters[1].w[0]);
+    // console.log('sum_sigma2[0].get_average() = ' + sum_sigma2[0].get_average()); // far to the left
+    // console.log('sum_sigma2[140].get_average() = ' + sum_sigma2[140].get_average()); // far to the right
+
     acc += 1;
     ctx_reg.stroke();
     ctx_reg.globalAlpha = 1.;
@@ -130,8 +153,8 @@ function draw_reg(){
         ctx_reg.beginPath();
         var n = 0;
         for(var x=0.0; x<=WIDTH; x+= density) {
-          if(x===0) ctx_reg.moveTo(x, -neurons[n][k]*ss+HEIGHT/2);
-          else ctx_reg.lineTo(x, -neurons[n][k]*ss+HEIGHT/2);
+          if(x===0) ctx_reg.moveTo(x, -neurons[n][k]*ssh+HEIGHT/2);
+          else ctx_reg.lineTo(x, -neurons[n][k]*ssh+HEIGHT/2);
           n++;
         }
         ctx_reg.stroke();
@@ -152,7 +175,7 @@ function draw_reg(){
     ctx_reg.strokeStyle = 'rgb(0,0,0)';
     ctx_reg.lineWidth = 1;
     for(var i=0;i<N;i++) {
-      drawCircle(data[i]*ss+WIDTH/2, -labels[i]*ss+HEIGHT/2, 5.0);
+      drawCircle(data[i]*ssw+WIDTH/2, -labels[i]*ssh+HEIGHT/2, 5.0);
     }    
 
     // Draw the mean plus minus 2 standard deviations
@@ -161,8 +184,8 @@ function draw_reg(){
     var c = 0;
     for(var x=0.0; x<=WIDTH; x+= density) {
       var mean = sum_y[c].get_average();
-      if(x===0) ctx_reg.moveTo(x, -mean*ss+HEIGHT/2);
-      else ctx_reg.lineTo(x, -mean*ss+HEIGHT/2);
+      if(x===0) ctx_reg.moveTo(x, -mean*ssh+HEIGHT/2);
+      else ctx_reg.lineTo(x, -mean*ssh+HEIGHT/2);
       c += 1;
     }
     ctx_reg.stroke();
@@ -175,18 +198,18 @@ function draw_reg(){
       var start = 0
       for(var x=0.0; x<=WIDTH; x+= density) {
         var mean = sum_y[c].get_average();
-        var std = Math.sqrt(sum_y_sq[c].get_average() - mean * mean + tau_inv);
+        var std = Math.sqrt(sum_y_sq[c].get_average() - mean * mean + sum_sigma2[c].get_average());
         mean += 2*std * i/4.;
-        if(x===0) {start = -mean*ss+HEIGHT/2; ctx_reg.moveTo(x, start); }
-        else ctx_reg.lineTo(x, -mean*ss+HEIGHT/2);
+        if(x===0) {start = -mean*ssh+HEIGHT/2; ctx_reg.moveTo(x, start); }
+        else ctx_reg.lineTo(x, -mean*ssh+HEIGHT/2);
         c += 1;
       }
       var c = sum_y.length - 1;
       for(var x=WIDTH; x>=0.0; x-= density) {
         var mean = sum_y[c].get_average();
-        var std = Math.sqrt(sum_y_sq[c].get_average() - mean * mean + tau_inv);
+        var std = Math.sqrt(sum_y_sq[c].get_average() - mean * mean + sum_sigma2[c].get_average());
         mean -= 2*std * i/4.;
-        ctx_reg.lineTo(x, -mean*ss+HEIGHT/2);
+        ctx_reg.lineTo(x, -mean*ssh+HEIGHT/2);
         c -= 1;
       }
       ctx_reg.lineTo(0, start);
@@ -216,7 +239,7 @@ function mouseClick(x, y, shiftPressed){
   //alert(x);
   x = x / $(NPGcanvas).width() * WIDTH;
   y = y / $(NPGcanvas).height() * HEIGHT;
-  data.push([(x-WIDTH/2)/ss]);
-  labels.push([-(y-HEIGHT/2)/ss]);
+  data.push([(x-WIDTH/2)/ssw]);
+  labels.push([-(y-HEIGHT/2)/ssh]);
   N += 1;
 }

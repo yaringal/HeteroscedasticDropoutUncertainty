@@ -6,7 +6,7 @@ var l2 = 0.005; // p_l(w) = N(w; 0, l^{−2}I); l^{−2} = 200
 var l2_decay = l2 * (1 - p) / (2 * N);
 console.log('l2_decay = ' + l2_decay);
 
-var N, data, labels;
+var data, labels;
 var density = 5.0;
 var ss = 30.0; // scale for drawing
 var acc = 0;
