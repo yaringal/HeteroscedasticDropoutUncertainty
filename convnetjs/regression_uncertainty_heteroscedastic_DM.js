@@ -1,7 +1,7 @@
 // Tunable parameters:
 var N = 20;
 var p = 0.05;
-var l2 = 0.000005; // p_l(w) = N(w; 0, l^{−2}I); smaller l2 = higher frequencies a-priori
+var l2 = 0.00000000005; // p_l(w) = N(w; 0, l^{−2}I); smaller l2 = higher frequencies a-priori
 var alpha = 4;
 var beta = 13;
 

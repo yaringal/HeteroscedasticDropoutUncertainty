@@ -1,7 +1,7 @@
 // Tunable parameters:
 var N = 24;
 var p = 0.05;
-var l2 = 0.005; // p_l(w) = N(w; 0, l^{−2}I); l^{−2} = 200
+var l2 = 0.1; // p_l(w) = N(w; 0, l^{−2}I); l^{−2} = 10
 
 var l2_decay = l2 * (1 - p) / (2 * N);
 console.log('l2_decay = ' + l2_decay);
@@ -17,9 +17,9 @@ var layer_defs, net, trainer, sum_y, sum_y_sq, sum_sigma2;
 layer_defs = [];
 layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:1});
 // layer_defs.push({type:'dropout', drop_prob:p}); // this is not a good idea when we have a one dimensional input!
-layer_defs.push({type:'fc', num_neurons:20, activation:'tanh'}); // num_neurons = num of outputs
+layer_defs.push({type:'fc', num_neurons:20, activation:'relu'}); // num_neurons = num of outputs
 layer_defs.push({type:'dropout', drop_prob:p});
-layer_defs.push({type:'fc', num_neurons:20, activation:'tanh'});
+layer_defs.push({type:'fc', num_neurons:20, activation:'sigmoid'});
 layer_defs.push({type:'dropout', drop_prob:p});
 layer_defs.push({type:'heteroscedastic_regression', num_neurons:2}); // this layer always adds one more fc layer
 
@@ -57,19 +57,19 @@ function regen_data() {
   labels = [];
   for(var i=0;i<N-4;i++) {
     // var x = Math.random()*10-5;
-    var x = 1.*i/(N-3)*10-5; // for reproducibility
+    var x = 1.*i/(N-5)*10-5; // for reproducibility
     var y = x*Math.sin(x);
     data.push([x]);
     labels.push([y]);
   }
-  data.push([7.5]);
-  labels.push([7]);
-  data.push([8]);
+  data.push([7]);
   labels.push([-7]);
-  data.push([10.5]);
+  data.push([8.5]);
   labels.push([7]);
-  data.push([11]);
+  data.push([10]);
   labels.push([-7]);
+  data.push([11.5]);
+  labels.push([7]);
 }
 
 function myinit(){

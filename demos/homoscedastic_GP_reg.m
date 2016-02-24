@@ -1,9 +1,9 @@
 clear all, close all
 
-x=rand(20,1)*10-5;
+x=linspace(-5, 5, 20)';
 y=x.*sin(x);
-x=[x;7.5;8;10.5;11];
-y=[y;7;-7;7;-7];
+x=[x;7;8.5;10;11.5];
+y=[y;-7;7;-7;7];
 
 plot(x, y, '+');
 
@@ -16,7 +16,7 @@ likfunc = @likGauss; hyp.lik = log(sn);
  
 nlml = gp(hyp, @infExact, meanfunc, covfunc, likfunc, x, y)
 
-z = linspace(-6, 11, 101)';
+z = linspace(-6, 12, 101)';
 [m s2] = gp(hyp, @infExact, meanfunc, covfunc, likfunc, x, y, z);
 
 f = [m+2*sqrt(s2); flipdim(m-2*sqrt(s2),1)]; 
