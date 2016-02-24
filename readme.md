@@ -42,7 +42,7 @@ Again, we see the same behaviour with the Gaussian process:
 
 ![Homoscedastic GP regression example, small observation noise](images/homoscedastic_GP_reg_small_observation_noise.png)
 
-This interactive dropout demo is given [here](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/homoscedastic_dropout_reg_small_observation_noise.html). The Matlab code for the Gaussian process experiments is available [here](homoscedastic_GP_reg.m), with a dependency on [GPML](http://www.gaussianprocess.org/gpml/code/matlab/doc/).
+This interactive dropout demo is given [here](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/homoscedastic_dropout_reg_small_observation_noise.html). The Matlab code for the Gaussian process experiments is available [here](demos/homoscedastic_GP_reg.m), with a dependency on [GPML](http://www.gaussianprocess.org/gpml/code/matlab/doc/).
 
 Lastly, our new heteroscedastic model is demonstrated [here](http://htmlpreview.github.io/?https://github.com/yaringal/HeteroscedasticDropoutUncertainty/blob/master/demos/heteroscedastic_dropout_reg.html). This model manages to increase model uncertainty in the parts of the plane where there is higher noise:
 
